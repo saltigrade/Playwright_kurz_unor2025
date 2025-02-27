@@ -59,3 +59,51 @@ test("Data transfering", async ({ request }) => {
     }
   );
 });
+
+test("Assert response 200 OK", async ({ request }) => {
+  const response = await request.get(
+    "https://tegb-backend-877a0b063d29.herokuapp.com/train"
+  );
+  expect(response.status()).toBe(200);
+});
+
+test("Assert Header", async ({ request }) => {
+  const response = await request.get(
+    "https://tegb-backend-877a0b063d29.herokuapp.com/train"
+  );
+  const headers = response.headers();
+  console.log(JSON.stringify(headers, null, 2)); // pomocí concole mohu zjistit chyby, například může být Content s velkým C
+  const contentTypeHeader = headers["content-type"];
+  expect(contentTypeHeader).toBe("application/json; charset=utf-8"); // zkontroluje hlavička = hodnota
+  expect(contentTypeHeader).toContain("application/json"); // zkontroluje, že hlavička obsahuje hodnotu
+});
+
+//Content-Type: application/json; charset=utf-8
+
+test("Assert body", async ({ request }) => {
+  const response = await request.get(
+    "https://tegb-backend-877a0b063d29.herokuapp.com/eshop/4"
+  );
+  const responseBody = await response.json();
+
+  // Kontrola existence
+  expect(responseBody.createdAt).toBeDefined();
+
+  // Kontrola typu
+  expect(typeof responseBody.active).toBe("number");
+  console.log("Použití typeof (typu): " + typeof responseBody.active);
+
+  // Kontrola hodnot
+  expect(responseBody.email).toBe("petr.fifka@tredgate.cz");
+});
+
+/*
+{
+    "userId": 4,
+    "username": "petrfifka",
+    "email": "petr.fifka@tredgate.cz",
+    "createdAt": "2023-10-24",
+    "updatedAt": null,
+    "active": 1
+}
+*/
